@@ -1,4 +1,5 @@
 from zeep import Client as ZeepClient
+from zeep.transports import Transport
 from zeep.exceptions import Fault
 from requests import Session
 from pprint import pprint
@@ -6,7 +7,11 @@ from pprint import pprint
 SOAP_URL = 'http://www.dneonline.com/calculator.asmx?WSDL'
 
 def do_stuff():
-    client = ZeepClient(SOAP_URL)
+    session = Session()
+    cert_path = '/opt/odoo/cert.pem'
+    session.verify = cert_path
+    transport = Transport(session=session)
+    client = ZeepClient(SOAP_URL, transport=transport)
     try:
         result = client.service.Add(1, 1)
         print('result')
